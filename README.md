@@ -30,7 +30,6 @@ A aplicação foi desenvolvida utilizando Python e FastAPI, com persistência de
 - JWT
 - Postman
 
-
 ## 4. Como executar o projeto
 
 ### 4.1. Pré-requisitos
@@ -39,34 +38,79 @@ A aplicação foi desenvolvida utilizando Python e FastAPI, com persistência de
 - Visual Studio Code ou outro editor de código.
 - Terminal PowerShell.
 
-### 4.2. Ativar o ambiente virtual
+### 4.2. Obter o projeto
 
-Na pasta principal do projeto, execute:
+Clone o repositório:
 
-    .\.venv\Scripts\Activate.ps1
+```powershell
+git clone https://github.com/MadsonChaves/raizes-do-nordeste-api.git
+```
 
-### 4.3. Aplicar as migrações do banco de dados
+Entre na pasta do projeto:
+
+```powershell
+cd raizes-do-nordeste-api
+```
+
+### 4.3. Criar e ativar o ambiente virtual
+
+Crie o ambiente virtual:
+
+```powershell
+python -m venv .venv
+```
+
+Ative o ambiente virtual:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+### 4.4. Instalar as dependências
 
 Com o ambiente virtual ativado, execute:
 
-    alembic upgrade head
+```powershell
+pip install -r requirements.txt
+```
 
-### 4.4. Iniciar a API
+### 4.5. Configurar as variáveis de ambiente
+
+Crie um arquivo chamado `.env` na pasta principal do projeto, utilizando o `.env.example` como referência.
+
+Configure uma chave secreta própria para a autenticação JWT:
+
+```env
+JWT_SECRET_KEY=sua_chave_secreta_aqui
+```
+
+Não compartilhe nem envie o arquivo `.env` ao repositório.
+
+### 4.6. Aplicar as migrações do banco de dados
+
+Com o ambiente virtual ativado e as variáveis de ambiente configuradas, execute:
+
+```powershell
+alembic upgrade head
+```
+
+### 4.7. Iniciar a API
 
 Execute o comando:
 
-    python -m uvicorn app.main:app --reload
+```powershell
+python -m uvicorn app.main:app --reload
+```
 
 A API estará disponível em:
 
 http://127.0.0.1:8000
 
-### 4.5. Documentação Swagger
+### 4.8. Documentação Swagger
 
 Para visualizar e testar os endpoints, acesse:
 
 http://127.0.0.1:8000/docs
-
 
 ## 5. Testes da API
 
@@ -105,59 +149,60 @@ Para executar os testes:
 
 Os resultados esperados incluem respostas de sucesso e respostas de erro, conforme as regras de autorização e validação da API.
 
-
 ## 6. Estrutura do projeto
 
 O projeto está organizado em módulos, separando as responsabilidades da aplicação para facilitar a manutenção, a organização e a evolução do sistema.
 
 ### 6.1. Organização das pastas
 
-- **app/:** contém o código principal da aplicação.
-- **core/:** concentra configurações e dependências essenciais, incluindo autenticação e controle de acesso.
-- **database/:** contém os recursos relacionados à conexão e ao acesso ao banco de dados.
-- **models/:** define os modelos das entidades e tabelas do banco de dados.
-- **routers/:** contém as rotas e os endpoints da API.
-- **schemas/:** define os esquemas utilizados na validação e na estruturação dos dados recebidos e enviados pela API.
-- **services/:** reúne os serviços e regras de processamento da aplicação.
-- **migrations/:** armazena os arquivos utilizados pelo Alembic para controlar as alterações na estrutura do banco de dados.
-- **migrations/versions/:** armazena as versões das migrações.
-- **tests/:** contém a coleção de testes da API criada no Postman.
+- **app/**: contém o código principal da aplicação.
+- **core/**: concentra configurações e dependências essenciais, incluindo autenticação e controle de acesso.
+- **database/**: contém os recursos relacionados à conexão e ao acesso ao banco de dados.
+- **models/**: define os modelos das entidades e tabelas do banco de dados.
+- **routers/**: contém as rotas e os endpoints da API.
+- **schemas/**: define os esquemas utilizados na validação e na estruturação dos dados recebidos e enviados pela API.
+- **services/**: reúne os serviços e regras de processamento da aplicação.
+- **migrations/**: armazena os arquivos utilizados pelo Alembic para controlar as alterações na estrutura do banco de dados.
+- **migrations/versions/**: armazena as versões das migrações.
+- **tests/**: contém a coleção de testes da API criada no Postman.
 
 ### 6.2. Principais arquivos
 
-- **main.py:** inicializa a aplicação FastAPI e registra os roteadores.
-- **env.py:** configura o ambiente de execução das migrações do Alembic.
-- **script.py.mako:** modelo utilizado na geração dos arquivos de migração.
-- **alembic.ini:** arquivo de configuração do Alembic.
-- **raizes.db:** banco de dados SQLite utilizado pela aplicação.
-- **teste.py:** arquivo Python utilizado para testes.
-- **README.md:** documentação principal do projeto.
-- **.venv/:** ambiente virtual Python utilizado para isolar as dependências do projeto.
+- `main.py`: inicializa a aplicação FastAPI e registra os roteadores.
+- `env.py`: configura o ambiente de execução das migrações do Alembic.
+- `script.py.mako`: modelo utilizado na geração dos arquivos de migração.
+- `alembic.ini`: arquivo de configuração do Alembic.
+- `requirements.txt`: lista as dependências necessárias para executar o projeto.
+- `.env.example`: exemplo das variáveis de ambiente necessárias.
+- `.gitignore`: define os arquivos e pastas que não devem ser enviados ao Git.
+- `README.md`: documentação principal do projeto.
 
 ### 6.3. Árvore de diretórios
 
-    Trabalho-Backend/
-    ├── app/
-    │   ├── core/
-    │   ├── database/
-    │   ├── models/
-    │   ├── routers/
-    │   ├── schemas/
-    │   ├── services/
-    │   ├── __init__.py
-    │   └── main.py
-    ├── migrations/
-    │   ├── versions/
-    │   ├── env.py
-    │   └── script.py.mako
-    ├── tests/
-    │   └── Testes - Raizes do Nordeste API.postman_collection.json
-    ├── .venv/
-    ├── alembic.ini
-    ├── raizes.db
-    ├── README.md
-    └── teste.py
-
+```text
+Trabalho-Backend/
+├── app/
+│   ├── core/
+│   ├── database/
+│   ├── models/
+│   ├── routers/
+│   ├── schemas/
+│   ├── services/
+│   ├── __init__.py
+│   └── main.py
+├── migrations/
+│   ├── versions/
+│   ├── env.py
+│   ├── README
+│   └── script.py.mako
+├── tests/
+│   └── Testes - Raizes do Nordeste API.postman_collection.json
+├── .env.example
+├── .gitignore
+├── alembic.ini
+├── README.md
+└── requirements.txt
+```
 
 ## 7. Segurança da aplicação
 
@@ -170,7 +215,6 @@ As principais medidas implementadas são:
 - **Controle de acesso por perfil:** determinadas operações são restritas a usuários com perfil de gerente ou administrador.
 - **Proteção de pedidos:** cada usuário pode consultar somente os próprios pedidos.
 - **Validação de dados:** utilização de schemas para validar as informações recebidas pela API.
-
 
 ## 8. Regras de negócio
 
