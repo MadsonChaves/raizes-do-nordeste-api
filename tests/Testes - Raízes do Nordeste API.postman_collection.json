@@ -1,0 +1,595 @@
+{
+  "info": {
+    "_postman_id": "2869657e-5c27-40a2-932f-565780f72176",
+    "name": "Testes - Raízes do Nordeste API",
+    "description": "Coleção de testes da API Raízes do Nordeste, desenvolvida como atividade prática de Back-end. Contém cenários positivos e negativos para validar autenticação, autorização, produtos, pedidos, estoque e pagamentos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56237230",
+    "_collection_link": "https://go.postman.co/collection/56237230-2869657e-5c27-40a2-932f-565780f72176?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "T01 - Login com sucesso",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"T01 - Login retorna status 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"T01 - Login retorna token\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta).to.have.property(\"access_token\");\r\n    pm.expect(resposta.token_type).to.eql(\"bearer\");\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"paulo.teste@example.com\",\r\n  \"senha\": \"SenhaForte123!\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/usuarios/login",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "usuarios",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T02 - Login com senha incorreta",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"T02 - Login retorna status 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"T02 - Login rejeita credenciais incorretas\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta).to.have.property(\"detail\");\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"paulo.teste@example.com\",\r\n  \"senha\": \"SenhaErrada123!\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/usuarios/login",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "usuarios",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T03 - Acesso sem token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"T03 - Acesso sem token retorna 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"T03 - API informa falta de autenticação\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta.detail).to.eql(\"Not authenticated\");\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/usuarios/me",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "usuarios",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T04 - Cliente sem permissão para criar unidade",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"T04 - Cliente recebe status 403\", function () {\r\n    pm.response.to.have.status(403);\r\n});\r\n\r\npm.test(\"T04 - API bloqueia criação de unidade\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta.detail).to.eql(\r\n        \"Você não tem permissão para acessar este recurso.\"\r\n    );\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_10kn}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nome\": \"Unidade de Teste\",\r\n  \"endereco\": \"Rua de Teste, 100\",\r\n  \"cidade\": \"Amambai\",\r\n  \"estado\": \"MS\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/unidades/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "unidades",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T05 - Consultar perfil do usuário",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"T05 - Consulta de perfil retorna 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"T05 - Resposta contém dados do usuário\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta).to.have.property(\"id\");\r\n    pm.expect(resposta).to.have.property(\"email\");\r\n    pm.expect(resposta).to.have.property(\"nome\");\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_10kn}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/usuarios/me",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "usuarios",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T06 - Listar produtos",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"T06 - Listagem de produtos retorna 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"T06 - Resposta contém produtos cadastrados\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta).to.be.an(\"array\");\r\n    pm.expect(resposta.length).to.be.above(0);\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_10kn}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/produtos/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "produtos",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T07 - Consultar fidelidade",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"T07 - Consulta de fidelidade retorna 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"T07 - Conta de fidelidade possui pontos\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta).to.have.property(\"usuario_id\");\r\n    pm.expect(resposta).to.have.property(\"pontos\");\r\n    pm.expect(resposta.pontos).to.be.a(\"number\");\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1987}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/fidelidade/me",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "fidelidade",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T08 - Cliente sem permissão para criar produto",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"T08 - Cliente recebe status 403\", function () {\r\n    pm.response.to.have.status(403);\r\n});\r\n\r\npm.test(\"T08 - API bloqueia criação de produto\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta.detail).to.eql(\r\n        \"Você não tem permissão para acessar este recurso.\"\r\n    );\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1987}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"unidade_id\": 1,\r\n  \"nome\": \"Produto de Teste\",\r\n  \"descricao\": \"Produto para teste de autorização\",\r\n  \"preco\": 10.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/produtos/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "produtos",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T09 - Criar pedido com sucesso",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\n\r\npm.test(\"T09 - Pedido criado com status 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"T09 - Pedido possui dados corretos\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta).to.have.property(\"id\");\r\n    pm.expect(resposta.status).to.eql(\"aguardando_pagamento\");\r\n    pm.expect(resposta.valor_total).to.eql(\"26.00\");\r\n    pm.expect(resposta.itens).to.have.lengthOf(2);\r\n});\r\n\r\nconst resposta = pm.response.json();\r\npm.collectionVariables.set(\"pedido_id\", resposta.id);\r\n\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1987}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"unidade_id\": 1,\r\n  \"canal_pedido\": \"aplicativo\",\r\n  \"itens\": [\r\n    {\r\n      \"produto_id\": 1,\r\n      \"quantidade\": 1\r\n    },\r\n    {\r\n      \"produto_id\": 2,\r\n      \"quantidade\": 1\r\n    }\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/pedidos/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "pedidos",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T10 - Pagamento recusado",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "\r\npm.test(\"T10 - Pagamento retorna status 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"T10 - Pagamento foi recusado\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta.status).to.eql(\"recusado\");\r\n    pm.expect(resposta.pedido_id).to.eql(Number(pm.collectionVariables.get(\"pedido_id\")));\r\n    pm.expect(resposta.metodo).to.eql(\"pix\");\r\n});\r\n\r\n\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1987}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"pedido_id\": {{pedido_id}},\r\n  \"metodo\": \"pix\",\r\n  \"aprovado\": false\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/pagamentos/",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "pagamentos",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T11 - Cliente sem permissão para alterar produto",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"T11 - Cliente não pode alterar produto\", function () {\r\n    pm.response.to.have.status(403);\r\n});\r\n\r\npm.test(\"T11 - API informa falta de permissão\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta.detail).to.eql(\r\n        \"Você não tem permissão para acessar este recurso.\"\r\n    );\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_17z0}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nome\": \"Produto Alterado pelo Cliente\",\r\n  \"descricao\": \"Tentativa de alteração sem autorização\",\r\n  \"preco\": 20.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/produtos/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "produtos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "T12 - Cliente não pode consultar pedido de outro usuário",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"T12 - Usuário não pode consultar pedido de outro usuário\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"T12 - API informa que o pedido não foi encontrado\", function () {\r\n    const resposta = pm.response.json();\r\n\r\n    pm.expect(resposta.detail).to.eql(\"Pedido não encontrado.\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_11v7}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/pedidos/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "pedidos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "json_web_token_10kn",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_1987",
+      "secret": true
+    },
+    {
+      "key": "pedido_id",
+      "value": ""
+    },
+    {
+      "key": "json_web_token_17z0",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_11v7",
+      "secret": true
+    }
+  ]
+}
